@@ -1,0 +1,81 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Project Plan}
+\author{Konsta Kanniainen, Petar Ulev, Yiran Wang, Daglar Coban, Matei Cristea-Enache}
+\date{April 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem analysis}
+ 
+What is the goal? 
+
+(algorithm which reports which strains from a known database are present in a given dataset) Ask client to expand on this/Check if we sort of understand it.
+
+Initial approach: multivariate linear regression, for each k-mer you estimate which combination of strains best predicts the count in the dataset.
+
+
+
+(input: strains and count of k-mers for each train strain)
+(take new sample, compute counts of k-mers, estimate which combinations of counts of k-mers from existing strains best predicts the sampled counts)
+How to deal with noise?biases? (cross-validation?)
+
+Expected Main Contributions: Expand on this.
+This will form the starting point for the requirements engineering
+
+Problem Statement:
+1. Algorithm that runs on 
+2. pipeline, which outputs
+3. visualisations.
+
+
+
+
+Schedule another meeting with client? Follow up with more requirements and contract negotiation
+
+\textbf{WDL of Broad Institute = https://openwdl.org/ }
+
+
+TODO:
+Feasability study --- Research similar projects
+
+Requirements engineering. 
+Choose methodologies: languages, database, server stuff
+Risk analysis (after knowing the requirements?)
+Project Planning
+
+
+pipeline (command line-gui-whatever)
+algorithms
+visualisation
+
+match strain to database strain
+
+
+PIPELINE questions to Lucas once we have the call:
+
+- who is our end user? what tools they have at disposal and how do they get access to, for instance, clusters or cloud computing? what are the main limitations in current pipelines? 
+
+workflow description language
+don't focus on pretty gui
+
+
+- "like qiime/kraken but for strains not species"?
+
+- What are the issues with existing pipelines and algorithms? Which aspects that we need to improve on based on current pipelines and algorithms?
+
+- OS requirements? 
+
+- bash script, node.js, python? does it need a graphical ui or should it be designed to run on a cluster already? are we supposed to use the bioinformatics workflow description languages on the slides?
+
+- if we use scripts (scala? etc) in the cloud, do we have to maintain them? if we don't maintain such cloud scripts on which the pipeline relies, should we provide these scripts and expect users to have a cluster or cloud platform to install them?
+
+- how big is our reference dataset? can we store it somewhere to refer to it?
+
+- how big is the user's input dataset going to be? where will it be stored?
+
+- benchmark: accuracy, speed? how do we keep it comparable, what are the existing benchmarks?
+\end{document}

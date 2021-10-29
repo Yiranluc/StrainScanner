@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage[
+backend=biber, 
+style=ieee
+]{biblatex}
+
+\addbibresource{literature.bib} %Imports bibliography file
+
+\title{Literature study for CSE2000}
+\author{K. Kanniainen, P. Ulev, Y. Wang, D. Coban, M. Cristea-Enache}
+\date{29 April 2020}
+
+\begin{document}
+\maketitle
+
+\section*{List of sources per group member}
+
+\textbf{K. Kanniainen} \cite{mpgprimer} \cite{jellyfish} \cite{wdl} \cite{snakemake} \cite{mbs:/content/journal/mgen/10.1099/mgen.0.000075}
+\newline
+\newline
+\textbf{P. Ulev} \cite{gatk} \cite{dimensions} \cite{tang_2016} \cite{MEGA6} \cite{bitSeq}
+\newline
+\newline
+\textbf{Y. Wang}\cite{StrainEst}\cite{Mash}\cite{Ipopt}\cite{Bowtie}\cite{MUMmer}
+\newline
+\newline
+\textbf{D. Coban} \cite{7030212} \cite{terra.bio} \cite{broad-institute} \cite{progressive} \cite{wall_kudtarkar_fusaro_pivovarov_patil_tonellato_2010}
+\newline
+\newline
+\textbf{M. Cristea-Enache} \cite{roosaare2017strainseeker} \cite{ahn2015sigma} \cite{teeling2004tetra} \cite{fiannaca2018deep} \cite{sezerman_ulgen_seymen_durasi_2019}
+%todo: problem analysis papers that haven't been cited by others
+
+\section{Background}
+Often the significant genetic variation even within a single species can have a big impact over the properties of microbes. Different strains, when colonising a hospitalised patient for instance, should be treated in different ways and pose different levels of danger to begin with. This is why it is useful to be able to identify, as accurately and as quickly as possible, different strains of bacteria present in a sample \cite{mbs:/content/journal/mgen/10.1099/mgen.0.000075}. 
+
+Modern technologies make it possible to easily extract DNA information from samples, but the limitation is that these methods cut the original DNA molecules into small fragments \cite{mpgprimer}.
+
+\section{Problem statement and key goals}
+Our challenge revolves around a computationally efficient tool to identify different strains of bacteria present in a sample of small DNA fragments. We have been asked to develop an end-to-end pipeline which can, given such a sample, estimate the relative abundancies of bacterial strains present in the data. Our product should be easy to use for a scientist with limited computer science experience. Preferably, it should run on a cloud platform.
+
+Input data may be given in the form of an identifier or a file path. Our product should download the data if it is not available in local storage already.
+
+The pipeline should then proceed to estimate the strain abundances using, initially, multivariate regression and possibly some machine learning tools. The design should be modular so that the exact algorithms are interchangeable.
+
+In the end, the results should be presented in a way that allows the users to easily draw conclusions from it.
+
+
+%\subsection{New project goals}
+%The focus of this project is to create a pipeline and algorithm for identifying which strains from a known database of such are present in a given metagenomic dataset. A visualization of the process is also considered as a possible feature of our project, as long as the two main goals are completed. It is a visual representation of key aspects of the pipeline that would give the user an overall idea of accuracy, sampling and other useful data.
+
+%We divided our team into two groups, one focusing more on the pipeline, and the other - on the algorithm, subject to the interest of research of the team members. (Did this really happen? I thought the client called it off -K) (from what I remember, we agreed that we each do our thing and we'll naturally focus on different parts -M) (TBH I don't think it's necessary to even mention the existence of the other group here. This subsection feels redundant. Commenting it out for now. -K)
+%--
+%1 paragraph 
+%Petar
+
+
+\subsection{Existing end-to-end products}
+%As mentioned, there are existing softwares to solve the problem described in the above section. This section illustrates 3 existing softwares and explained their performance
+%TODO: this subsection should mostly compare the pipeline aspects of each product such as easiness of use, platforms they run on, output formats, updateability of database, how accurate/fast they are compared to other tools
+
+The following section highlights three existing applications, Sigma \cite{ahn2015sigma}, StrainEst \cite{StrainEst}, and BIB (Bayesian identification of bacterial) \cite{mbs:/content/journal/mgen/10.1099/mgen.0.000075}, that can achieve strain-level identification from a metagenomic dataset. There are some differences in their runtime, space complexity, and output information. 
+
+Sigma enables multi-threaded and parallel computing that makes it scalable when using supercomputers \cite{ahn2015sigma}. It is also written in C++, which is an additional benefit for speed and memory management. Its pipeline generates a couple of files (in different formats), but the final results are in two formats: HTML for visualization and a text format for further analysis. Sigma is run with a reference genome database and metagenomic sequencing reads as inputs. 
+
+StrainEst is powerful when all the different strains of a particular sampled species have to be identified. It manages to achieve high accuracy, which is notable given that the same species may contain numerous strains. It also has a configurable reference genome database. 
+
+BIB manages to identify the presence of different organisms with little genomic difference. This is important because similar pathogenic bacteria can be closely related, but "vary considerable in terms of virulence, resistance and spread" \cite{mbs:/content/journal/mgen/10.1099/mgen.0.000075}. It is also considerably fast and uses modest computational resources. Both BIB and StrainEst are written in Python. 
+
+
+\section {Pipeline}
+A pipeline in a Unix shell context consists of several commands linked to each other with a pipe ('$|$') character. This syntax connects the previous command or program's standard out to the next one's standard in to form a "pipe" of data flow. In a bioinformatics context, it means a similar system of analysis and data wrangling tools and commands, but is typically crafted with a dedicated description language that is more human-readable than simple bash and, aside the basic linear chaining, allows for various other "plumbing" settings, that is, data flow configurations such as branches and merges. These enable concurrent execution of suitable tools \cite{wdl}.
+
+These core pipelines can be extended from both ends. In the front-end it is possible to abstract away code and ask the user for data sources and selected options with a graphical user interface. In the other end of the system, the results of the process can also be displayed visually without requiring any further interaction from the user.
+
+A good pipeline should be modular. This means that each part in the pipeline should be replaceable with any piece of software that implements the same interface. In our project, the parts most likely to be replaced frequently are the exact analysis tools and the (cloud) platforms they should run on.
+
+
+\subsection{Key features}
+\begin{enumerate}
+    \item User starts with a simple GUI to generate a configuration file for the pipeline. The user can upload this file to a cloud service and proceed from there. This GUI can be a simple HTML file that the user can open in their web browser.
+    \item User logs into a cloud computing service and clicks to start a workflow that will take the data identified in the configuration file and process it according to the user's preferred settings. The data and algorithms used in the tasks can either be located on the same cloud platform or somewhere else.
+    \item The final command of the workflow offers to download an HTML report file or possibly automatically opens it in the browser. It should provide a visually clear representation of the output data and options to download it.
+\end{enumerate}
+Of these three, step 2 should have the highest priority and step 1 the lowest, as a small JSON file should be relatively easy to edit even without a GUI.
+
+
+\subsection{Related tools}
+This section presents some useful software tools that can be of use for our project. 
+
+\textbf{WDL} (Workflow Description Language) is a language made to describe data processing workflows in a human-readable way. The syntax is user-friendly and structured and is appropriate for non-programmers as well. It can chain numerous tasks together and parallelize their execution. It is appropriate for genome analysis pipelines and developed by Broad Institute and has various tutorials online which further incited us to use it as our workflow language. WDL is not executable by itself, instead it needs to be run on an execution engine such as Cromwell \cite{wdl}.
+
+\textbf{Snakemake} is one of the most famous workflow management system tools out there. Workflows are described with a human readable language based on Python and can be run on clouds, servers, and other environments. Its documentation is more extensive than WDL's and it is highly popular with its 591 citations, as of April 2020 \cite{dimensions}. Snakemake is widely used in bioinformatics and "interoperates ...  with any web service with well-defined input and output  (file) formats" \cite{snakemake}.
+% \cite{sezerman_ulgen_seymen_durasi_2019}
+%4 paragraphs
+%Petar(monday)
+
+
+\section {Algorithm}
+The computational problem regarding strain identification is as follows: the input data consists of short DNA fragments extracted from the sample, while we also have a reference database containing information about known strains and their DNA profiles. 
+
+A statistical model estimating the "mix" of different strains in a sample can be formulated as a multivariate linear regression problem. To formulate this, we first need a measure of similarity. One technique to estimate this revolves around k-mers, which are sequences of length k that are captured from the DNA fragments with a sliding window. The counts of different k-mers can be used as a measure of similarity between genomes and this will serve as the basis for our computation model. Further data analysis techniques may be used to improve accuracy.
+
+The question of computational efficiency comes into play when the size of the sample data and the value of k are considered. The input datasets are typically big, even hundreds of gigabytes, so we cannot rely on fitting everything in the main memory at once; instead, we will want to design an algorithm that processes the data one row at a time. Furthermore, there are $4^k$ possible k-mers in a DNA sequence, as every character in the k-mer can be any of the four bases A, C, T, and G. As we have to track a count for each of these, we need to pick sufficiently small values for k.
+
+
+\subsection{Existing algorithms}
+This section explains the key steps used in the 3 existing algorithms mentioned above. Their way of how to approach as well as solve the problem using which tools may serve a good reference when we create our algorithm.
+
+\textbf{Sigma} algorithm \cite{ahn2015sigma} for metagenomic biosurveillance uses a stochastic probabilistic model to resemble metagenomic reads sampling from genomes. In order to align metagenomic reads against reference genome, Sigma adopted a short-read alignment algorithm, Bowtie2 \cite{Bowtie}, by default. To estimate the probability of sampling a random read from the reference genome $g_j$, Sigma uses the non-linear programming method implemented in the Ipopt library \cite{Ipopt}. 
+
+\textbf{StrainEst} \cite{StrainEst} is a program that uses single-nucleotide variants (SNV) profiles to count and identify coexisting strains and their relative abundances. The pairwise Mash distances \cite{Mash} are computed between the genomes of the species of user interest and the species representative (SR), in order to filter out unrelated genomes. They use complete linkage hierarchical clustering to select the representative set of genomes, which are aligned onto SR using MUMmer\cite{MUMmer} and the SNV profiles are calculated. 10 representative genomes of the species are selected and aligned with reads using Bowtie2 \cite{Bowtie}. Given the SNV profiles, Lasso regression is used to identify the reference strains as well as their relative frequencies which fit best into the observed allelic frequencies. 
+
+\textbf{BIB}, Bayesian identification of bacterial strains from sequencing data \cite{mbs:/content/journal/mgen/10.1099/mgen.0.000075}, uses UPGMA method in the MEGA6 \cite{MEGA6} to cluster the strains and uses progressiveMauve \cite{progressive} for multiple sequence alignment, in order to selects reference genomes. Then, BIB uses Bowtie2 \cite{Bowtie} to let the reads align against the reference sequences. BitSeq \cite{bitSeq} is used to estimate the relative frequency of each strain in the sequenced dataset.
+
+\subsection{Related tools} 
+This section features some genomic analysis tools that could be used in our algorithm.
+
+\textbf{GATK} is a "genomic analysis toolkit focused on variant discovery". It is widely used software with strong documentation and use cases. Its scope is beyond human genomes, it handles other organisms as well and supports exome analysis. It can be run on a cloud platform or a traditional cluster. GATK supports local clusters such as Docker but can also be run directly. It features ready-made pipelines but also modular tools, including data pre-processing and SNP calls \cite{tang_2016}, among others \cite{gatk, sezerman_ulgen_seymen_durasi_2019}.
+
+\textbf{Mash} is an alignment-free toolkit to compute the distance between two genome sequences. It extends from MinHash algorithm, which compresses large sequences to sketch representations. Mash then compares the sketches and computes the Jaccard index, the proportion of shared k-mers, a significance value to test the matches by chance of searching in a database, and the Mash distance, which assesses proportion of the mutation between two sequences \cite{Mash}.
+
+%\textbf{Tensorflow} is machine learning library, mostly used for image processing, reinforcement learning and time-series analysis. It has powerful and complex set of tools and features with good API. Its main focus are different types of neural networks and many kinds of real-world problems can be solved with it. Google developers work on it and it currently has state-of-the art novel algorithms in machine learning. Its also well-known for ability to operate on large scale environments. It is available in multiple languages, including Python, Javascript, C++ and Java. (Commenting out because of missing citation. Can be added back when the reference is ready.)
+
+
+\section{Cloud platforms}
+Cloud computing is a large area of research nowadays. It is helpful in numerous fields, including bioinformatics, as the file sizes can be quite big and the algorithms used often require a considerable amount of computational power; cloud environments are built to scale as needed.
+
+The expected user group of our program is biologists. We expect them to have either none or a very basic understanding of programming, so a cloud-native solution with an intuitive workflow that does not require the end user to install software themselves could be really useful and we have not encountered such a tool in our research this far. Another upside is that cloud-native workflows are very easy to share to the larger scientific community. This significantly improves the impact potential of our work.
+
+For these reasons as well as being one of the goals put forward by our client, we have researched one of the more popular cloud-native workflows used by the bioinformatics community.
+
+\subsection{Terra}
+The cloud platform Terra allows users to upload their data to the cloud and lets them use each other's published workflows combined with applications like Jupyter Notebook within a simple interface. It has built-in support for Cromwell and genomic analysis tools such as GATK. Cloud computing is also supported in the form of Google Cloud integration and allowing for the use of containers such as Docker \cite{terra.bio, broad-institute}.
+
+Terra offers native support for running scripts written in WDL \cite{terra.bio}. WDL in turn "... makes it straightforward to define complex analysis tasks, chain them together in workflows, and parallelise their execution" \cite{wdl}.
+
+\medskip
+\printbibliography
+\end{document}

@@ -1,0 +1,53 @@
+env:
+  commonjs: true
+  es6: true
+  node: true
+extends:
+  - 'plugin:jsdoc/recommended'
+  - standard
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+parserOptions:
+  ecmaVersion: 2018
+plugins:
+  - jsdoc
+rules:
+  semi:
+    - error
+    - always
+  operator-linebreak:
+    - error
+    - before
+  max-lines-per-function:
+    - error
+    - 60
+  jsdoc/require-jsdoc:
+    - error
+    -
+      require:
+        FunctionDeclaration: true
+        MethodDefinition: true
+        ClassDeclaration: true
+        ClassExpression: true
+        ArrowFunctionExpression: true
+        FunctionExpression: true
+  jsdoc/require-param:
+    - error
+  jsdoc/require-param-type:
+    - off
+  jsdoc/require-param-name:
+    - error
+  jsdoc/require-param-description:
+    - error
+  jsdoc/require-returns:
+    - error
+  jsdoc/require-returns-type:
+    - off
+  jsdoc/check-tag-names:
+    - warn
+    -
+      definedTags:
+        - swagger
+        - param
+        - returns

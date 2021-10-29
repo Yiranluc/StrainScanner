@@ -1,0 +1,40 @@
+env:
+  browser: true
+  es6: true
+extends:
+  - 'plugin:vue/essential'
+  - 'plugin:vue/recommended'
+  - standard
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: module
+plugins:
+  - vue
+rules:
+  semi:
+    - error
+    - never
+  operator-linebreak:
+    - error
+    - before
+  vue/html-indent:
+    - error
+    - 2
+    -
+      attribute: 1
+      baseIndent: 1
+      closeBracket: 0
+      alignAttributesVertically: false
+      ignores: []
+  vue/max-attributes-per-line:
+    - error
+    -
+      singleline: 2
+      multiline: 1
+  vue/attribute-hyphenation:
+    - off
+  vue/require-prop-types:
+    - off

@@ -1,0 +1,5 @@
+# Sensitive environment variables
+/backend/.env
+
+/inputs/*.json
+/options/*.json

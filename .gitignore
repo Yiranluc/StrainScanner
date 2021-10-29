@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+.idea
+backend/.env
+*.jar
+backend/cromwell/inputs/*.json
+backend/cromwell/options/*.json
+cromwell-workflow-logs
+*.log
+.nyc_output
+coverage

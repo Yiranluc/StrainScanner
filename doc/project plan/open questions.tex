@@ -1,0 +1,34 @@
+Questions:
+1. What is a reasonable standard for assessing the identification accuracy of our program (to start off)? How can be say our predicted relative abundance is similar enough with the ground truth? (maybe compare with how much RA other software gets?)
+ART: simulated the relative abundance
+A: 
+1. Things that can be added to the pipeline: Quality preprocessing and allow users to build their own database.
+
+2. To check for NCBI for relative tools.
+
+2. What does Lucas think about GATK?
+
+aimed at another problem, not disentangling the strain, rather mutation of genes
+
+maybe pathseq will be useful
+
+%  GATK is basically a collecion of command line tools with primary focus on variant discovery (a bit different from our purpose). All the tools GATK offers can be chained to make workflows. GATK already has a set of workflows, which they call GATK Best practices. If we go to Terra, we will find all the workspaces with the respective workflows. We can inspect them (they are well documented), run them on their data (which is also easy) OR use our own data as input. This seems fine, but I am not sure if the analysis made is appropriate for our task, also if it is - then shall we just use all the pipelines made by GATK to input our data? Another thing we can do is do not make use of the already GATK Best practices, but craft some ourselves (with the tools GATK offers). Another option would be to just use tools different than GATK.
+
+% Elaboration on how we could use GATK: apart from the built pipelines, it uses numerous tools listed here: 
+% https://gatk.broadinstitute.org/hc/en-us/articles/360042746571--Tool-Documentation-Index
+% Additional research on them could be made to choose some of them, mix them perhaps, and try to work with them in Terra. One thing to note: none of the tools' description contains the word "strain" neither "identification". I think the whole purpose is a bit different. In addition: the only metagenomic analysis tool (as stated in the link I posted) is PathSeq (http://software.broadinstitute.org/pathseq/), which "s a computational tool for the identification and analysis of microbial sequences in high-throughput human sequencing data that is designed to work with large numbers of sequencing reads in a scalable manner".
+% Suggestion for question 2: just ask if Lucas considers it appropriate to use GATK for this. Maybe he doesn't know though.
+
+3. Jellyfish can be used for k-mer counting, but it only reads FASTA files. Should we try and use it anyway by converting our FASTQ:s, do we have a reference database somewhere with k-mer counts? If we only have a database of genomes, then it would make more sense to use Mash. -> What and where is the reference database we should use? In the papers? We're a bit lost here.
+
+mash has built it k-mer counting
+didn't really say anything, depends on what we want to do
+
+
+4. For T.Abeel as TU coach: with the current plan, we don't get to write a significant amount of lines of code during any phase of the project; it feels a lot more research and installing existing software than writing something of our own, and we're still a bit lost on what will be the main contribution from our part.
+
+
+pipeline is pretty deep, we could write down a lot of stuff on it
+like: preprocessing of genomes (trim down dna to the parts we are most confident of)
+strainest uses a fixed db, that could become outdated. pipeline could create the database
+modular with different strain algorithms, be able to compare performance of different tools
