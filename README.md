@@ -6,9 +6,10 @@ Authors: Konsta Kanniainen, Petar Ulev, Yiran Wang, Daglar Coban, Matei Cristea-
 
 TU Delft, 2020
 
-Background: 
-Correctly identifying the bacteria strains present in a sample can be very important, especially when applying it to the healthcare sector. Since some strains with small genetic differences can cause dangerous diseases. Several tools for bacterial strain identification exist, but they are usually aimed at an end user with some technology background, which makes them harder to use by the average microbiologist. After analysing several existing tools and interviewing our client, we find that most of them require the user to perform command line configuration steps and research their API. Even in the case of online functionality, the available features are limited in scope and usability for the average biologist.
-We have been tasked by our client to build an easy to use, end-to-end pipeline, making use of existing strain estimation algorithms. Further key goals are to make use of available cloud platforms and offer an intuitive web interface for the end user. Last, the program has a visualisation of the results and it should be relatively easy to deploy. Here comes our product StrainScanner.
+Brief on the Background: 
+- Correctly identifying the bacteria strains present in a sample can be very important, especially for the healthcare sector. Since some strains with small genetic differences can cause dangerous diseases. 
+- Several tools for bacterial strain identification exist, but usually computationally expensive and aimed at users with technology backgrounds, which makes them harder to use by the average microbiologist. 
+- Our task is to build an easy to use, end-to-end and easy-to-deploy web platform, making use of existing strain estimation algorithms and available cloud platforms, as well as offering an intuitive user interface. 
 
 Product description: 
 After **authenticating with a Google account**, users can select the algorithm and enter the required parameters to run a strain-level bacterial identification for a provided metagenomics sample. Each calculation will be run by **Cromwell** on Google Cloud Platform through **Google Cloud APIs**. **MongoDB** is used to record the computations launched by each user. When a computation is completed, the bacterial strains identified in the sample and their corresponding relative abundances will be returned to the front end on the results page, written in **Vue.js**.
